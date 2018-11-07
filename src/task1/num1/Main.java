@@ -26,33 +26,33 @@ public class Main {
             step = 700;
         }
 
-        int startIndex = usersStartNumber;
-        int finishIndex;
+        int startBound = usersStartNumber;
+        int finishBound;
         if (usersStartNumber + step > usersFinishNumber) {
-            finishIndex = usersFinishNumber;
+            finishBound = usersFinishNumber;
         } else {
-            finishIndex = usersStartNumber + step;
+            finishBound = usersStartNumber + step;
         }
         for (int i = 0; i < threads.length; i++) {
-            threads[i] = new Thread(new SearchingSimpleNumbers(startIndex, finishIndex, storage));
-            startIndex = finishIndex + 1;
-            if (finishIndex + step > usersFinishNumber) {
-                finishIndex = usersFinishNumber;
+            threads[i] = new Thread(new SearchingSimpleNumbers(startBound, finishBound, storage));
+            startBound = finishBound + 1;
+            if (finishBound + step > usersFinishNumber) {
+                finishBound = usersFinishNumber;
             } else {
-                finishIndex = finishIndex + step;
+                finishBound = finishBound + step;
             }
             threads[i].start();
         }
 
-        while (finishIndex != usersFinishNumber) {
+        while (finishBound != usersFinishNumber) {
             for (int i = 0; i < threads.length; i++) {
                 if (!threads[i].isAlive()) {
-                    threads[i] = new Thread(new SearchingSimpleNumbers(startIndex, finishIndex, storage));
-                    startIndex = finishIndex + 1;
-                    if (finishIndex + step > usersFinishNumber) {
-                        finishIndex = usersFinishNumber;
+                    threads[i] = new Thread(new SearchingSimpleNumbers(startBound, finishBound, storage));
+                    startBound = finishBound + 1;
+                    if (finishBound + step > usersFinishNumber) {
+                        finishBound = usersFinishNumber;
                     } else {
-                        finishIndex = finishIndex + step;
+                        finishBound = finishBound + step;
                     }
                     threads[i].start();
                     threads[i].join();
