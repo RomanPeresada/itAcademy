@@ -1,4 +1,4 @@
-package task1.task1_1;
+package task1.num1;
 
 import java.util.Scanner;
 
@@ -7,49 +7,50 @@ public class Main {
         Storage storage = new Storage();
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter a start number");
-        int startNumber = scanner.nextInt();
+        int usersStartNumber = scanner.nextInt();
         System.out.println("Enter a finish number");
-        int finishNumber = scanner.nextInt();
+        int usersFinishNumber = scanner.nextInt();
         System.out.println("Enter a count of threads count");
         int countOfThreads = scanner.nextInt();
         Thread[] threads = new Thread[countOfThreads];
         int step;
 
 
-        if (finishNumber - startNumber >= 0 && finishNumber - startNumber <= 100) {
+        if (usersFinishNumber - usersStartNumber >= 0 && usersFinishNumber - usersStartNumber <= 100) {
             step = 10;
-        } else if (finishNumber - startNumber > 100 && finishNumber - startNumber <= 1000) {
+        } else if (usersFinishNumber - usersStartNumber > 100 && usersFinishNumber - usersStartNumber <= 1000) {
             step = 50;
-        } else if (finishNumber - startNumber > 1000 && finishNumber - startNumber <= 100_000) {
+        } else if (usersFinishNumber - usersStartNumber > 1000 && usersFinishNumber - usersStartNumber <= 100_000) {
             step = 400;
         } else {
             step = 700;
         }
-        int startIndex = startNumber;
+
+        int startIndex = usersStartNumber;
         int finishIndex;
-        if (startNumber + step > finishNumber) {
-            finishIndex = finishNumber;
+        if (usersStartNumber + step > usersFinishNumber) {
+            finishIndex = usersFinishNumber;
         } else {
-            finishIndex = startNumber + step;
+            finishIndex = usersStartNumber + step;
         }
         for (int i = 0; i < threads.length; i++) {
             threads[i] = new Thread(new SearchingSimpleNumbers(startIndex, finishIndex, storage));
             startIndex = finishIndex + 1;
-            if (finishIndex + step > finishNumber) {
-                finishIndex = finishNumber;
+            if (finishIndex + step > usersFinishNumber) {
+                finishIndex = usersFinishNumber;
             } else {
                 finishIndex = finishIndex + step;
             }
             threads[i].start();
         }
 
-        while (finishIndex != finishNumber) {
+        while (finishIndex != usersFinishNumber) {
             for (int i = 0; i < threads.length; i++) {
                 if (!threads[i].isAlive()) {
                     threads[i] = new Thread(new SearchingSimpleNumbers(startIndex, finishIndex, storage));
                     startIndex = finishIndex + 1;
-                    if (finishIndex + step > finishNumber) {
-                        finishIndex = finishNumber;
+                    if (finishIndex + step > usersFinishNumber) {
+                        finishIndex = usersFinishNumber;
                     } else {
                         finishIndex = finishIndex + step;
                     }
