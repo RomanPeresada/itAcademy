@@ -1,4 +1,4 @@
-package task1.task1_1;
+package task1.num1;
 
 public class SearchingSimpleNumbers implements Runnable {
     private int startNumber;
@@ -33,7 +33,7 @@ public class SearchingSimpleNumbers implements Runnable {
             }
         }
         long finish = System.currentTimeMillis();
-        System.out.println(Thread.currentThread().getName() + ", time = " + (finish - start));
+        System.out.println(Thread.currentThread().getName() + ", time of execution = " + (finish - start) + "ms");
     }
 
     @Override
