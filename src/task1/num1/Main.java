@@ -35,7 +35,7 @@ public class Main {
         }
         while (finishBound != usersFinishNumber) {
             for (int i = 0; i < threads.length; i++) {
-                if (threads[i] == null || !threads[i].isAlive()) {
+                if ((threads[i] == null || !threads[i].isAlive()) && startBound < usersFinishNumber) {
                     threads[i] = new Thread(new SearchingSimpleNumbers(startBound, finishBound, storage));
                     startBound = finishBound + 1;
                     if (finishBound + step > usersFinishNumber) {
