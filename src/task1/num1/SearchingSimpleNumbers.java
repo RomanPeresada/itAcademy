@@ -12,6 +12,8 @@ public class SearchingSimpleNumbers implements Runnable {
     }
 
     public void findSimpleNumbers() {
+        if (startNumber == finishNumber) return;
+
         long start = System.currentTimeMillis();
         if (startNumber < 2) {
             startNumber = 2;
