@@ -33,7 +33,8 @@ public class SearchingSimpleNumbers implements Runnable {
             }
         }
         long finish = System.currentTimeMillis();
-        System.out.println(Thread.currentThread().getName() + ", time of execution = " + (finish - start) + "ms");
+        System.out.printf("%s from %d to %d, time of execution = %dms\n", Thread.currentThread().getName(), startNumber, finishNumber, (finish - start));
+
     }
 
     @Override

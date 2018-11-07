@@ -1,4 +1,4 @@
-package task1.task1_1;
+package task1.num1;
 
 import java.util.*;
 
