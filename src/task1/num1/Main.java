@@ -33,20 +33,9 @@ public class Main {
         } else {
             finishBound = usersStartNumber + step;
         }
-        for (int i = 0; i < threads.length; i++) {
-            threads[i] = new Thread(new SearchingSimpleNumbers(startBound, finishBound, storage));
-            startBound = finishBound + 1;
-            if (finishBound + step > usersFinishNumber) {
-                finishBound = usersFinishNumber;
-            } else {
-                finishBound = finishBound + step;
-            }
-            threads[i].start();
-        }
-
         while (finishBound != usersFinishNumber) {
             for (int i = 0; i < threads.length; i++) {
-                if (!threads[i].isAlive()) {
+                if (threads[i] == null || !threads[i].isAlive()) {
                     threads[i] = new Thread(new SearchingSimpleNumbers(startBound, finishBound, storage));
                     startBound = finishBound + 1;
                     if (finishBound + step > usersFinishNumber) {
