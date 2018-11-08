@@ -13,19 +13,7 @@ public class Main {
         System.out.println("Enter a count of threads count");
         int countOfThreads = scanner.nextInt();
         Thread[] threads = new Thread[countOfThreads];
-        int step;
-
-
-        if (usersFinishNumber - usersStartNumber >= 0 && usersFinishNumber - usersStartNumber <= 100) {
-            step = 10;
-        } else if (usersFinishNumber - usersStartNumber > 100 && usersFinishNumber - usersStartNumber <= 1000) {
-            step = 50;
-        } else if (usersFinishNumber - usersStartNumber > 1000 && usersFinishNumber - usersStartNumber <= 100_000) {
-            step = 400;
-        } else {
-            step = 700;
-        }
-
+        int step = getStep(usersStartNumber, usersFinishNumber);
         int startBound = usersStartNumber;
         int finishBound;
         if (usersStartNumber + step > usersFinishNumber) {
@@ -33,9 +21,10 @@ public class Main {
         } else {
             finishBound = usersStartNumber + step;
         }
-        while (finishBound != usersFinishNumber) {
+        int counter = 0;
+        while (finishBound != usersFinishNumber || counter < 2) {
             for (int i = 0; i < threads.length; i++) {
-                if ((threads[i] == null || !threads[i].isAlive()) && startBound < usersFinishNumber) {
+                if (threads[i] == null || !threads[i].isAlive()) {
                     threads[i] = new Thread(new SearchingSimpleNumbers(startBound, finishBound, storage));
                     startBound = finishBound + 1;
                     if (finishBound + step > usersFinishNumber) {
@@ -45,11 +34,30 @@ public class Main {
                     }
                     threads[i].start();
                     threads[i].join();
+                    if (finishBound == usersFinishNumber) {
+                        counter++;
+                    }
                 }
             }
         }
-
         // storage.showNumbers();
         System.out.println("Count of simple numbers = " + storage.getSimpleNumbers().size());
     }
+
+    private static int getStep(int start, int finish) {
+        int step;
+        if (finish - start >= 0 && finish - start <= 10) {
+            step = 5;
+        } else if (finish - start > 10 && finish - start <= 100) {
+            step = 8;
+        } else if (finish - start > 100 && finish - start <= 1000) {
+            step = 45;
+        } else if (finish - start > 1000 && finish - start <= 10000) {
+            step = 100;
+        } else {
+            step = 700;
+        }
+        return step;
+    }
+
 }
