@@ -1,5 +1,9 @@
 package task1.num1;
 
+import javafx.util.Pair;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -14,34 +18,19 @@ public class Main {
         int countOfThreads = scanner.nextInt();
         Thread[] threads = new Thread[countOfThreads];
         int step = getStep(usersStartNumber, usersFinishNumber);
-        int startBound = usersStartNumber;
-        int finishBound;
-        if (usersStartNumber + step > usersFinishNumber) {
-            finishBound = usersFinishNumber;
-        } else {
-            finishBound = usersStartNumber + step;
-        }
-        int counter = 0;
-        while (finishBound != usersFinishNumber || counter < 2) {
-            for (int i = 0; i < threads.length; i++) {
-                if (threads[i] == null || !threads[i].isAlive()) {
-                    threads[i] = new Thread(new SearchingSimpleNumbers(startBound, finishBound, storage));
-                    startBound = finishBound + 1;
-                    if (finishBound + step > usersFinishNumber) {
-                        finishBound = usersFinishNumber;
-                    } else {
-                        finishBound = finishBound + step;
-                    }
-                    threads[i].start();
-                    threads[i].join();
-                    if (finishBound == usersFinishNumber) {
-                        counter++;
-                    }
-                }
+        List<List<Pair<Integer, Integer>>> listList = fillAndGetListOfRequiredValues(usersStartNumber, usersFinishNumber, step, countOfThreads);
+        // в listList хранятся списки диапазовов для каждого потока
+
+        for (int i = 0; i < threads.length; i++) {
+            if (i < listList.size()) {
+                threads[i] = new Thread(new SearchingSimpleNumbers(listList.get(i), storage));
+                threads[i].start();
+                threads[i].join();
             }
         }
+
         // storage.showNumbers();
-        System.out.println("Count of simple numbers = " + storage.getSimpleNumbers().size());
+        System.out.println("Amount of simple numbers = " + storage.getSimpleNumbers().size());
     }
 
     private static int getStep(int start, int finish) {
@@ -60,4 +49,39 @@ public class Main {
         return step;
     }
 
+    private static List<List<Pair<Integer, Integer>>> fillAndGetListOfRequiredValues(int usersStartNumber, int usersFinishNumber, int step, int countOfThreads) {
+        int startBound = usersStartNumber;
+        int finishBound;
+        if (usersStartNumber + step > usersFinishNumber) {
+            finishBound = usersFinishNumber;
+        } else {
+            finishBound = usersStartNumber + step;
+        }
+        List<List<Pair<Integer, Integer>>> listList = new ArrayList<>();
+        int counter = 0; //необходим для того чтобы,когда finishBound == usersFinishNumber,сделать еще одну итерацию
+        int indexOfThread = 0;
+        while (finishBound != usersFinishNumber || counter < 2) {
+            if (indexOfThread >= countOfThreads) {
+                indexOfThread = 0;
+            }
+            List<Pair<Integer, Integer>> pairList = new ArrayList<>();
+            if (listList.size() <= indexOfThread) {
+                pairList.add(new Pair<>(startBound, finishBound));
+                listList.add(pairList);
+            } else {
+                listList.get(indexOfThread).add(new Pair<>(startBound, finishBound));
+            }
+            startBound = finishBound + 1;
+            if (finishBound + step > usersFinishNumber) {
+                finishBound = usersFinishNumber;
+            } else {
+                finishBound = finishBound + step;
+            }
+            if (finishBound == usersFinishNumber) {
+                counter++;
+            }
+            indexOfThread++;
+        }
+        return listList;
+    }
 }
