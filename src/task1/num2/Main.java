@@ -10,6 +10,7 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class Main {
     public static void main(String[] args) throws InterruptedException, ExecutionException {
@@ -25,16 +26,19 @@ public class Main {
         List<List<Pair<Integer, Integer>>> listList = fillAndGetListOfRequiredValues(usersStartNumber, usersFinishNumber, step, countOfThreads);
         // в listList хранятся списки диапазовов для каждого потока
 
+        List<Future> futures = new ArrayList<>();
         ExecutorService executorService = Executors.newFixedThreadPool(countOfThreads);
         for (int i = 0; i < countOfThreads; i++) {
             if (i < listList.size()) {
-                executorService.submit(new SearchingSimpleNumbers(listList.get(i), storage)).get();
-
+                futures.add(executorService.submit(new SearchingSimpleNumbers(listList.get(i), storage)));
             }
         }
+        for (Future future : futures) {
+            future.get();
+        }
         executorService.shutdown();
-        // storage.showNumbers();
         System.out.println("Amount of simple numbers = " + storage.getSimpleNumbers().size());
+        // storage.showNumbers();
     }
 
     private static int getStep(int start, int finish) {
