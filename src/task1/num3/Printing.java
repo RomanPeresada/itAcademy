@@ -14,7 +14,7 @@ public class Printing implements Runnable {
         synchronized (storage) {
             while (!storage.isDone()) {
                 try {
-                    Thread.sleep(20);
+                    Thread.sleep(23);
                     System.out.println("Enter a path to file");
                     String path = new Scanner(System.in).nextLine();
                     if (path.isEmpty()) {

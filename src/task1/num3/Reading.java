@@ -43,6 +43,9 @@ public class Reading implements Runnable {
         for (int i = 0; i < bytes.size() - 1; i++) {
             for (int j = i + 1; j < bytes.size(); j++) {
                 List<Integer> currentSequence = bytes.subList(i, j);
+                if (theLongestSequence.length() > currentSequence.toString().length()) {
+                    continue;
+                }
                 if (currentSequence.toString().equals(theLongestSequence)) {
                     secondIndex = i;
                 }
