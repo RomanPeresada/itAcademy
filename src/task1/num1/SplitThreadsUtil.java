@@ -7,22 +7,6 @@ import java.util.List;
 
 public class SplitThreadsUtil {
 
-    private static int getStep(int start, int finish) {
-        int step;
-        if (finish - start >= 0 && finish - start <= 10) {
-            step = 5;
-        } else if (finish - start > 10 && finish - start <= 100) {
-            step = 8;
-        } else if (finish - start > 100 && finish - start <= 1000) {
-            step = 45;
-        } else if (finish - start > 1000 && finish - start <= 10000) {
-            step = 100;
-        } else {
-            step = 700;
-        }
-        return step;
-    }
-
     public static List<List<Pair<Integer, Integer>>> fillAndGetListOfRequiredValues(int usersStartNumber, int usersFinishNumber, int amountOfThreads) {
         int step = getStep(usersStartNumber, usersFinishNumber);
         int startBound = usersStartNumber;
@@ -50,6 +34,22 @@ public class SplitThreadsUtil {
             positionIndexOfThread++;
         }
         return listForAllThreads;
+    }
+
+    private static int getStep(int start, int finish) {
+        int step;
+        if (finish - start >= 0 && finish - start <= 10) {
+            step = 5;
+        } else if (finish - start > 10 && finish - start <= 100) {
+            step = 8;
+        } else if (finish - start > 100 && finish - start <= 1000) {
+            step = 45;
+        } else if (finish - start > 1000 && finish - start <= 10000) {
+            step = 100;
+        } else {
+            step = 700;
+        }
+        return step;
     }
 
     private static int getInitialFinishBound(int usersStartNumber, int usersFinishNumber, int step) {
