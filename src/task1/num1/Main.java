@@ -23,12 +23,11 @@ public class Main {
 
         for (int i = 0; i < threads.length; i++) {
             if (i < listList.size()) {
-                threads[i] = new Thread(new SearchingSimpleNumbers(listList.get(i), storage));
+                threads[i] = new Thread(new SearchSimpleNumbers(listList.get(i), storage));
                 threads[i].start();
                 threads[i].join();
             }
         }
-
         // storage.showNumbers();
         System.out.println("Amount of simple numbers = " + storage.getSimpleNumbers().size());
     }
@@ -49,39 +48,51 @@ public class Main {
         return step;
     }
 
-    private static List<List<Pair<Integer, Integer>>> fillAndGetListOfRequiredValues(int usersStartNumber, int usersFinishNumber, int step, int countOfThreads) {
+    private static List<List<Pair<Integer, Integer>>> fillAndGetListOfRequiredValues(int usersStartNumber, int usersFinishNumber, int step, int amountOfThreads) {
         int startBound = usersStartNumber;
+        int finishBound = getInitialFinishBound(usersStartNumber, usersFinishNumber, step);
+        List<List<Pair<Integer, Integer>>> listForAllThreads = new ArrayList<>();
+        int counter = 0; //необходим для того чтобы,когда finishBound == usersFinishNumber,сделать еще одну итерацию
+        int positionIndexOfThread = 0;
+
+        while (finishBound != usersFinishNumber || counter < 2) {
+            if (positionIndexOfThread >= amountOfThreads) {
+                positionIndexOfThread = 0;
+            }
+            List<Pair<Integer, Integer>> listForOneThread = new ArrayList<>();
+            if (listForAllThreads.size() <= positionIndexOfThread) {
+                listForOneThread.add(new Pair<>(startBound, finishBound));
+                listForAllThreads.add(listForOneThread);
+            } else {
+                listForAllThreads.get(positionIndexOfThread).add(new Pair<>(startBound, finishBound));
+            }
+            startBound = finishBound + 1;
+            finishBound = getNextFinishBound(finishBound, usersFinishNumber, step);
+            if (finishBound == usersFinishNumber) {
+                counter++;
+            }
+            positionIndexOfThread++;
+        }
+        return listForAllThreads;
+    }
+
+
+    private static int getInitialFinishBound(int usersStartNumber, int usersFinishNumber, int step) {
         int finishBound;
         if (usersStartNumber + step > usersFinishNumber) {
             finishBound = usersFinishNumber;
         } else {
             finishBound = usersStartNumber + step;
         }
-        List<List<Pair<Integer, Integer>>> listList = new ArrayList<>();
-        int counter = 0; //необходим для того чтобы,когда finishBound == usersFinishNumber,сделать еще одну итерацию
-        int indexOfThread = 0;
-        while (finishBound != usersFinishNumber || counter < 2) {
-            if (indexOfThread >= countOfThreads) {
-                indexOfThread = 0;
-            }
-            List<Pair<Integer, Integer>> pairList = new ArrayList<>();
-            if (listList.size() <= indexOfThread) {
-                pairList.add(new Pair<>(startBound, finishBound));
-                listList.add(pairList);
-            } else {
-                listList.get(indexOfThread).add(new Pair<>(startBound, finishBound));
-            }
-            startBound = finishBound + 1;
-            if (finishBound + step > usersFinishNumber) {
-                finishBound = usersFinishNumber;
-            } else {
-                finishBound = finishBound + step;
-            }
-            if (finishBound == usersFinishNumber) {
-                counter++;
-            }
-            indexOfThread++;
+        return finishBound;
+    }
+
+    private static int getNextFinishBound(int currentFinishBound, int usersFinishNumber, int step) {
+        if (currentFinishBound + step > usersFinishNumber) {
+            currentFinishBound = usersFinishNumber;
+        } else {
+            currentFinishBound += step;
         }
-        return listList;
+        return currentFinishBound;
     }
 }

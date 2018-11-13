@@ -4,11 +4,11 @@ import javafx.util.Pair;
 
 import java.util.List;
 
-public class SearchingSimpleNumbers implements Runnable {
+public class SearchSimpleNumbers implements Runnable {
     private final List<Pair<Integer,Integer>> pairs;
     private final Storage storage;
 
-    public SearchingSimpleNumbers( List<Pair<Integer, Integer>> pairs, Storage storage) {
+    public SearchSimpleNumbers(List<Pair<Integer, Integer>> pairs, Storage storage) {
         this.pairs = pairs;
         this.storage = storage;
     }
