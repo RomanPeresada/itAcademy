@@ -2,10 +2,10 @@ package task1.num3;
 
 import java.util.Scanner;
 
-public class Printing implements Runnable {
+public class Print implements Runnable {
     private final Storage storage;
 
-    public Printing(Storage storage) {
+    public Print(Storage storage) {
         this.storage = storage;
     }
 

@@ -6,10 +6,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Reading implements Runnable {
+public class Read implements Runnable {
     private final Storage storage;
 
-    public Reading(Storage storage) {
+    public Read(Storage storage) {
         this.storage = storage;
     }
 
@@ -27,7 +27,7 @@ public class Reading implements Runnable {
                 }
                 fileInputStream.close();
                 storage.setBytesFromFile(arrayOfBytes);
-                searchTheLongestSequence();
+                searchTheLongestSequenceAndIndexes();
                 storage.notify();
                 storage.wait();
             }
@@ -35,7 +35,7 @@ public class Reading implements Runnable {
         }
     }
 
-    private void searchTheLongestSequence() throws InterruptedException {
+    private void searchTheLongestSequenceAndIndexes() {
         List<Integer> bytes = storage.getBytesFromFile();
         List<List<Integer>> lists = new ArrayList<>(); //для хранения всех существующих последовательностей
         int maxLength = 0, firstIndex = 0, secondIndex = 0;
@@ -43,13 +43,13 @@ public class Reading implements Runnable {
         for (int i = 0; i < bytes.size() - 1; i++) {
             for (int j = i + 1; j < bytes.size(); j++) {
                 List<Integer> currentSequence = bytes.subList(i, j);
-                if (theLongestSequence.length() > currentSequence.toString().length()) {
-                    continue;
-                }
                 if (currentSequence.toString().equals(theLongestSequence)) {
                     secondIndex = i;
+                    continue;
                 }
-                if (bytes.subList(i + 1, bytes.size()).toString().contains(currentSequence.toString().substring(1, currentSequence.toString().length() - 1))) {
+                if (theLongestSequence.length() <= currentSequence.toString().length()
+                        && bytes.subList(i + 1, bytes.size()).toString()
+                        .contains(currentSequence.toString().substring(1, currentSequence.toString().length() - 1))) {
                     lists.add(currentSequence);
                     if (currentSequence.size() > maxLength) {
                         maxLength = currentSequence.size();
@@ -59,6 +59,10 @@ public class Reading implements Runnable {
                 }
             }
         }
+        writeInStorageTheLongestSequenceAndIndexes(lists, firstIndex, secondIndex);
+    }
+
+    private void writeInStorageTheLongestSequenceAndIndexes(List<List<Integer>> lists, int firstIndex, int secondIndex) {
         lists.sort((o1, o2) -> Integer.compare(o2.size(), o1.size()));
         if (lists.size() > 0) {
             storage.setTheLongestSequence(lists.get(0));
